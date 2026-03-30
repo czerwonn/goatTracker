@@ -1,0 +1,240 @@
+.app {
+  display: flex;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.sidebar-left {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 200px;
+}
+
+.main-content {
+  max-width: 900px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #0a0a0f;
+  text-align: center;
+  padding: 16px 0;
+  margin-bottom: 14px;
+}
+
+
+.search-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.search-bar input {
+  padding: 8px 12px;
+  font-size: 16px;
+  width: 300px;
+}
+
+.search-bar button {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+.ranked-info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ranked-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.rank-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.ranked-badge h3 {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+.ranked-badge .rank {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.ranked-badge .winrate {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.match-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border-left: 4px solid;
+}
+
+.match-card.win {
+  border-left-color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.match-card.loss {
+  border-left-color: #dc3545;
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.match-champion {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.champion-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.summoner-spells {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.spell-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+}
+
+.match-items {
+  display: flex;
+  gap: 2px;
+}
+
+.item-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.empty-item {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.match-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  gap: 2px;
+  margin-left: auto;
+}
+
+.result.win {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.result.loss {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.error {
+  color: #dc3545;
+  text-align: center;
+  padding: 16px;
+}
+
+.loading {
+  text-align: center;
+  padding: 32px;
+}
+
+
+.heartsteel-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.heartsteel-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+}
+
+.heartsteel-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.heartsteel-label {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.heartsteel-count {
+  font-size: 36px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.heartsteel-sub {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+
+.watermark {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: inherit;
+  opacity: 0.5;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.watermark:hover {
+  opacity: 0.8;
+}
+
+.watermark-icon {
+  width: 18px;
+  height: 18px;
+}
