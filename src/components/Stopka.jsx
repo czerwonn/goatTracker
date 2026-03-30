@@ -7,7 +7,7 @@ export default function Stopka() {
       className="watermark"
     >
       zrobione z miłością przez czerwonego
-      <img src="/umbreon.png" alt="umbreon" className="watermark-icon" />
+      <img src={`${import.meta.env.BASE_URL}umbreon.png`} alt="umbreon" className="watermark-icon" />
     </a>
   );
 }
