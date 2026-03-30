@@ -1,38 +1,27 @@
 import axios from 'axios';
 
-const API_BASE = '/api';
+const API_BASE = 'https://goat-tracker-ten.vercel.app/api/riot';
 
-export const getAccount = async (gameName, tagLine) => {
-  const { data } = await axios.get(`${API_BASE}/account/${encodeURIComponent(gameName)}/${encodeURIComponent(tagLine)}`);
-  return data;
-};
+const riotApi = (params) => axios.get(API_BASE, { params }).then((r) => r.data);
 
-export const getSummoner = async (puuid) => {
-  const { data } = await axios.get(`${API_BASE}/summoner/${puuid}`);
-  return data;
-};
+export const getAccount = (gameName, tagLine) =>
+  riotApi({ action: 'account', gameName, tagLine });
 
-export const getRankedStats = async (puuid) => {
-  const { data } = await axios.get(`${API_BASE}/ranked/${puuid}`);
-  return data;
-};
+export const getSummoner = (puuid) =>
+  riotApi({ action: 'summoner', puuid });
 
-export const getMatchIds = async (puuid, count = 20) => {
-  const { data } = await axios.get(`${API_BASE}/matches/${puuid}?count=${count}`);
-  return data;
-};
+export const getRankedStats = (puuid) =>
+  riotApi({ action: 'ranked', puuid });
 
-export const getMatchDetails = async (matchId) => {
-  const { data } = await axios.get(`${API_BASE}/match/${matchId}`);
-  return data;
-};
+export const getMatchIds = (puuid, count = 20) =>
+  riotApi({ action: 'matches', puuid, count });
 
-export const getHeartsteelCount = async (puuid, count = 100) => {
-  const { data } = await axios.get(`${API_BASE}/heartsteel-count/${puuid}?count=${count}`);
-  return data;
-};
+export const getMatchDetails = (matchId) =>
+  riotApi({ action: 'match', matchId });
 
-// Data Dragon helpers
+export const getHeartsteelCount = (puuid, count = 100) =>
+  riotApi({ action: 'heartsteel', puuid, count });
+
 const DDRAGON_VERSION = '16.6.1';
 const DDRAGON_BASE = `https://ddragon.leagueoflegends.com/cdn/${DDRAGON_VERSION}`;
 
