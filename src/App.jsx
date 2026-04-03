@@ -7,14 +7,14 @@ import { usePlayerUUID } from './hooks/usePlayerUUID';
 import './App.css';
 
 function App() {
-  const { account, summoner, ranked, matches, heartsteelCount, loading, error, fetchData } =
+  const { account, summoner, ranked, matches, heartsteelCount, fetchedAt, loading, error, fetchData } =
     usePlayerUUID();
   const hasFetched = useRef(false);
 
   useEffect(() => {
     if (!hasFetched.current) {
       hasFetched.current = true;
-      fetchData('Tilis', 'EUPL');
+      fetchData();
     }
   }, []);
 
@@ -28,6 +28,11 @@ function App() {
       <div className="main-content">
         <header className="app-header">
           <h1>GOAT Tracker</h1>
+          {fetchedAt && (
+            <span className="fetched-at">
+              dane z {new Date(fetchedAt).toLocaleDateString('pl-PL')}
+            </span>
+          )}
         </header>
 
         <main>
