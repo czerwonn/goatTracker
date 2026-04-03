@@ -96,6 +96,7 @@ async function main() {
   execSync('npx vite build', { stdio: 'inherit' });
 
   writeFileSync('dist/data.json', JSON.stringify(data));
+  writeFileSync('dist/CNAME', 'goat.czerw.dev');
   console.log(`Done! Heartsteel: ${heartsteelCount}/${matchIds.length} matches`);
 }
 
