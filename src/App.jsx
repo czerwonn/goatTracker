@@ -15,11 +15,12 @@ function App() {
     ranked,
     matches,
     heartsteelCount,
+    mordeLosses,
     fetchedAt,
     loading,
     error,
     fetchData,
-    fetchLive,
+    fetchKokos,
   } = usePlayerUUID();
   const hasFetched = useRef(false);
   const [przejscie, setPrzejscie] = useState(false);
@@ -35,7 +36,7 @@ function App() {
   const odblokujKokosa = () => {
     setPrzejscie(true);
     setKokosMode(true);
-    fetchLive('kokos2008', 'huko');
+    fetchKokos();
     setTimeout(() => setPrzejscie(false), 2000);
   };
 
@@ -52,7 +53,7 @@ function App() {
       <aside className="sidebar-left">
         {ranked.length > 0 && <InfoRangi ranked={ranked} />}
         {kokosMode ? (
-          <TrackerMordekaiser matches={matches} puuid={account?.puuid} />
+          <TrackerMordekaiser mordeLosses={mordeLosses} />
         ) : (
           <TrackerHeartsteel heartsteelCount={heartsteelCount} />
         )}
@@ -63,7 +64,14 @@ function App() {
           <h1>GOAT Tracker</h1>
           {fetchedAt && (
             <span className="fetched-at">
-              dane z {new Date(fetchedAt).toLocaleDateString('pl-PL')}
+              dane z{' '}
+              {new Date(fetchedAt).toLocaleString('pl-PL', {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </span>
           )}
         </header>

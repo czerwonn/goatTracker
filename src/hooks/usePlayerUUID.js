@@ -8,6 +8,7 @@ import {
 } from '../api/riot';
 
 const HEARTSTEEL_ID = 3084;
+const MORDEKAISER = 'Mordekaiser';
 
 async function mapLimit(items, limit, fn) {
   const results = new Array(items.length);
@@ -28,9 +29,20 @@ export function usePlayerUUID() {
   const [ranked, setRanked] = useState([]);
   const [matches, setMatches] = useState([]);
   const [heartsteelCount, setHeartsteelCount] = useState(null);
+  const [mordeLosses, setMordeLosses] = useState(null);
   const [fetchedAt, setFetchedAt] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const applySnapshot = (data) => {
+    setAccount(data.account);
+    setSummoner(data.summoner);
+    setRanked(data.ranked);
+    setMatches(data.matches);
+    setHeartsteelCount(data.heartsteelCount);
+    setMordeLosses(data.mordeLosses ?? null);
+    setFetchedAt(data.fetchedAt);
+  };
 
   const applyLive = async (gameName, tagLine, matchCount) => {
     const acc = await getAccount(gameName, tagLine);
@@ -46,60 +58,47 @@ export function usePlayerUUID() {
     );
     const matchDetails = details.filter(Boolean);
 
-    const hsCount = matchDetails.filter((m) => {
-      const p = m.info.participants.find((x) => x.puuid === acc.puuid);
-      if (!p) return false;
-      return [p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].includes(
-        HEARTSTEEL_ID
-      );
-    }).length;
+    const parts = matchDetails
+      .map((m) => m.info.participants.find((x) => x.puuid === acc.puuid))
+      .filter(Boolean);
+
+    const hsCount = parts.filter((p) =>
+      [p.item0, p.item1, p.item2, p.item3, p.item4, p.item5, p.item6].includes(HEARTSTEEL_ID)
+    ).length;
+    const mordeCount = parts.filter((p) => p.championName === MORDEKAISER && !p.win).length;
 
     setAccount(acc);
     setSummoner(summ);
     setRanked(rank);
     setMatches(matchDetails);
     setHeartsteelCount({ count: hsCount, matchesChecked: matchDetails.length });
+    setMordeLosses({ count: mordeCount, matchesChecked: matchDetails.length });
     setFetchedAt(Date.now());
   };
 
-  const fetchLive = async (gameName, tagLine, matchCount = 20) => {
+  const load = async (snapshotUrl, live) => {
     setLoading(true);
     setError(null);
     try {
-      await applyLive(gameName, tagLine, matchCount);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch(`${import.meta.env.BASE_URL}data.json`);
+      const res = await fetch(snapshotUrl);
       const contentType = res.headers.get('content-type') || '';
-
       if (res.ok && contentType.includes('application/json')) {
-        const data = await res.json();
-        setAccount(data.account);
-        setSummoner(data.summoner);
-        setRanked(data.ranked);
-        setMatches(data.matches);
-        setHeartsteelCount(data.heartsteelCount);
-        setFetchedAt(data.fetchedAt);
+        applySnapshot(await res.json());
         return;
       }
-
-      await applyLive('Tilis', 'EUPL', 10);
+      await live();
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
+
+  const fetchData = () =>
+    load(`${import.meta.env.BASE_URL}data.json`, () => applyLive('Tilis', 'EUPL', 10));
+
+  const fetchKokos = () =>
+    load(`${import.meta.env.BASE_URL}kokos.json`, () => applyLive('kokos2008', 'huko', 20));
 
   return {
     account,
@@ -107,10 +106,11 @@ export function usePlayerUUID() {
     ranked,
     matches,
     heartsteelCount,
+    mordeLosses,
     fetchedAt,
     loading,
     error,
     fetchData,
-    fetchLive,
+    fetchKokos,
   };
 }

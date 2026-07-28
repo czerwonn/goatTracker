@@ -1,11 +1,14 @@
-import { writeFileSync, mkdirSync, cpSync } from 'fs';
+import { writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 
 const API_KEY = process.env.RIOT_API_KEY;
-const GAME_NAME = 'Tilis';
-const TAG_LINE = 'EUPL';
-const MATCH_COUNT = 100;
 const HEARTSTEEL_ID = 3084;
+const MORDEKAISER = 'Mordekaiser';
+
+const PLAYERS = [
+  { gameName: 'Tilis', tagLine: 'EUPL', matchCount: 100, out: 'data.json' },
+  { gameName: 'kokos2008', tagLine: 'huko', matchCount: 20, out: 'kokos.json' },
+];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -28,11 +31,11 @@ async function riotFetch(url) {
   return res.json();
 }
 
-async function main() {
-  console.log(`Fetching data for ${GAME_NAME}#${TAG_LINE}...`);
+async function fetchPlayer({ gameName, tagLine, matchCount }) {
+  console.log(`Fetching data for ${gameName}#${tagLine}...`);
 
   const account = await riotFetch(
-    `https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${GAME_NAME}/${TAG_LINE}`
+    `https://europe.api.riotgames.com/riot/account/v1/accounts/by-riot-id/${gameName}/${tagLine}`
   );
   console.log('Account:', account.puuid.substring(0, 20) + '...');
 
@@ -53,12 +56,13 @@ async function main() {
   await sleep(100);
 
   const matchIds = await riotFetch(
-    `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${account.puuid}/ids?count=${MATCH_COUNT}`
+    `https://europe.api.riotgames.com/lol/match/v5/matches/by-puuid/${account.puuid}/ids?count=${matchCount}`
   );
   console.log('Match IDs:', matchIds.length);
 
   const matches = [];
   let heartsteelCount = 0;
+  let mordeLosses = 0;
 
   for (let i = 0; i < matchIds.length; i++) {
     await sleep(1300);
@@ -75,6 +79,7 @@ async function main() {
           participant.item3, participant.item4, participant.item5, participant.item6,
         ];
         if (items.includes(HEARTSTEEL_ID)) heartsteelCount++;
+        if (participant.championName === MORDEKAISER && !participant.win) mordeLosses++;
       }
 
       console.log(`Match ${i + 1}/${matchIds.length} fetched`);
@@ -83,21 +88,33 @@ async function main() {
     }
   }
 
-  const data = {
+  console.log(`${gameName}: Heartsteel ${heartsteelCount}, Morde losses ${mordeLosses} / ${matchIds.length}`);
+
+  return {
     fetchedAt: new Date().toISOString(),
     account,
     summoner,
     ranked,
     matches: matches.slice(0, 10),
     heartsteelCount: { count: heartsteelCount, matchesChecked: matchIds.length },
+    mordeLosses: { count: mordeLosses, matchesChecked: matchIds.length },
   };
+}
+
+async function main() {
+  const results = [];
+  for (const player of PLAYERS) {
+    results.push([player.out, await fetchPlayer(player)]);
+  }
 
   console.log('Building frontend...');
   execSync('npx vite build', { stdio: 'inherit' });
 
-  writeFileSync('dist/data.json', JSON.stringify(data));
+  for (const [out, data] of results) {
+    writeFileSync(`dist/${out}`, JSON.stringify(data));
+  }
   writeFileSync('dist/CNAME', 'goat.czerw.dev');
-  console.log(`Done! Heartsteel: ${heartsteelCount}/${matchIds.length} matches`);
+  console.log('Done!');
 }
 
 main().catch((err) => {
