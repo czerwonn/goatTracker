@@ -1,15 +1,29 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import InfoRangi from './components/InfoRangi';
 import HistoriaMeczow from './components/HistoriaMeczow';
 import TrackerHeartsteel from './components/TrackerHeartsteel';
+import TrackerMordekaiser from './components/TrackerMordekaiser';
+import SekretnaSiatka from './components/SekretnaSiatka';
 import Stopka from './components/Stopka';
 import { usePlayerUUID } from './hooks/usePlayerUUID';
 import './App.css';
 
 function App() {
-  const { account, summoner, ranked, matches, heartsteelCount, fetchedAt, loading, error, fetchData } =
-    usePlayerUUID();
+  const {
+    account,
+    summoner,
+    ranked,
+    matches,
+    heartsteelCount,
+    fetchedAt,
+    loading,
+    error,
+    fetchData,
+    fetchLive,
+  } = usePlayerUUID();
   const hasFetched = useRef(false);
+  const [przejscie, setPrzejscie] = useState(false);
+  const [kokosMode, setKokosMode] = useState(false);
 
   useEffect(() => {
     if (!hasFetched.current) {
@@ -18,11 +32,30 @@ function App() {
     }
   }, []);
 
+  const odblokujKokosa = () => {
+    setPrzejscie(true);
+    setKokosMode(true);
+    fetchLive('kokos2008', 'huko');
+    setTimeout(() => setPrzejscie(false), 2000);
+  };
+
   return (
     <div className="app">
+      {przejscie && (
+        <div className="przejscie-overlay">
+          <div className="przejscie-glitch" data-tekst="drugi goat">
+            drugi goat
+          </div>
+        </div>
+      )}
+
       <aside className="sidebar-left">
         {ranked.length > 0 && <InfoRangi ranked={ranked} />}
-        <TrackerHeartsteel heartsteelCount={heartsteelCount} />
+        {kokosMode ? (
+          <TrackerMordekaiser matches={matches} puuid={account?.puuid} />
+        ) : (
+          <TrackerHeartsteel heartsteelCount={heartsteelCount} />
+        )}
       </aside>
 
       <div className="main-content">
@@ -41,9 +74,11 @@ function App() {
           {loading && <div className="loading">Ładowanie danych...</div>}
 
           {!loading && summoner && (
-            <HistoriaMeczow matches={matches} puuid={account?.puuid} />
+            <HistoriaMeczow matches={matches.slice(0, 10)} puuid={account?.puuid} />
           )}
         </main>
+
+        <SekretnaSiatka onOdblokowanie={odblokujKokosa} />
       </div>
 
       <Stopka />

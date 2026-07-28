@@ -243,3 +243,145 @@
   width: 18px;
   height: 18px;
 }
+
+
+.morde-tracker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.morde-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  border: 2px solid #dc3545;
+  box-shadow: 0 0 12px rgba(220, 53, 69, 0.5);
+}
+
+.morde-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.morde-label {
+  font-size: 12px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.morde-count {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1;
+  color: #dc3545;
+}
+
+.morde-sub {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+
+.sekretna-siatka {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  width: 96px;
+  margin: 48px auto 24px;
+  opacity: 0.12;
+  transition: opacity 0.3s;
+}
+
+.sekretna-siatka:hover {
+  opacity: 0.35;
+}
+
+.sekretna-siatka.blad {
+  animation: sekret-trzesienie 0.3s;
+}
+
+.sekretny-kafelek {
+  aspect-ratio: 1;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.sekretny-kafelek:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sekretny-kafelek.aktywny {
+  background: rgba(220, 53, 69, 0.7);
+  box-shadow: 0 0 12px rgba(220, 53, 69, 0.9);
+}
+
+@keyframes sekret-trzesienie {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+
+.przejscie-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050507;
+  animation: przejscie-znikanie 2s forwards;
+}
+
+.przejscie-glitch {
+  position: relative;
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: #dc3545;
+  text-shadow: 2px 0 #00fff9, -2px 0 #ff00c1;
+  animation: przejscie-glitch 0.4s infinite;
+}
+
+.przejscie-glitch::before,
+.przejscie-glitch::after {
+  content: attr(data-tekst);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.przejscie-glitch::before {
+  color: #00fff9;
+  clip-path: inset(0 0 55% 0);
+  animation: przejscie-glitch 0.3s infinite reverse;
+}
+
+.przejscie-glitch::after {
+  color: #ff00c1;
+  clip-path: inset(50% 0 0 0);
+  animation: przejscie-glitch 0.25s infinite;
+}
+
+@keyframes przejscie-glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-4px, 2px); }
+  40% { transform: translate(4px, -2px); }
+  60% { transform: translate(-3px, -1px); }
+  80% { transform: translate(3px, 1px); }
+}
+
+@keyframes przejscie-znikanie {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
