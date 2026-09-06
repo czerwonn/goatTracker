@@ -6,7 +6,7 @@ const HEARTSTEEL_ID = 3084;
 const MORDEKAISER = 'Mordekaiser';
 
 const PLAYERS = [
-  { gameName: 'Tilis', tagLine: 'EUPL', matchCount: 100, out: 'data.json' },
+  { gameName: 'Tilis', tagLine: 'PLEU', matchCount: 100, out: 'data.json' },
   { gameName: 'kokos2008', tagLine: 'huko', matchCount: 20, out: 'kokos.json' },
 ];
 

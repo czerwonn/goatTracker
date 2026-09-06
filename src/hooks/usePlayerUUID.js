@@ -95,7 +95,7 @@ export function usePlayerUUID() {
   };
 
   const fetchData = () =>
-    load(`${import.meta.env.BASE_URL}data.json`, () => applyLive('Tilis', 'EUPL', 10));
+    load(`${import.meta.env.BASE_URL}data.json`, () => applyLive('Tilis', 'PLEU', 10));
 
   const fetchKokos = () =>
     load(`${import.meta.env.BASE_URL}kokos.json`, () => applyLive('kokos2008', 'huko', 20));
